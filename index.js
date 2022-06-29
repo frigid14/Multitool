@@ -33,6 +33,12 @@ BGGB##&  &GGG###      BGGGGPB##BPGGGGB      ###GGG&  &##BGGB
 `);
 
 const commands = [];
+const autoresponse = [];
+
+function register() {
+	registerCommands();
+	registerResponses();
+}
 
 function registerCommands() {
 	const timer = Date.now();
@@ -48,6 +54,21 @@ function registerCommands() {
 
 	logger.info(`Commands registed in ${(Date.now()-timer)/1000} seconds`);
 }
+function registerResponses() {
+	// ew copypasta code
+	const timer = Date.now();
+	autoresponse.splice(0,commands.length); // Refresh responses
+	const arPath = path.join(__dirname, 'autoresponder'); // Get the path of the commands folder
+	const arFiles = fs.readdirSync(arPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
+
+	for (const file of arFiles) {
+		const filePath = path.join(arPath, file);
+		const ar = require(filePath);
+		autoresponse.push([ar.regex, ar.response]);
+	}
+
+	logger.info(`Responses registed in ${(Date.now()-timer)/1000} seconds`);
+}
 
 // Replace TOKEN with your bot account's token
 const bot = new Eris(process.env.DISCORD_TOKEN, {
@@ -57,7 +78,7 @@ const bot = new Eris(process.env.DISCORD_TOKEN, {
 });
 
 bot.on("ready", () => { // When the bot is ready
-	registerCommands();
+	register();
     logger.info("Bot is on");
 });
 
@@ -66,6 +87,8 @@ bot.on("error", (err) => {
 });
 
 bot.on("messageCreate", async (msg) => { // When a message is created
+	if (msg.author.id === bot.user.id) return; // don't want an infinite loop
+
     if (msg.content.startsWith(prefix)) {
 		msg.content = msg.content.substring(prefix.length);
 		
@@ -78,6 +101,16 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 				return element;
 			}
 		});
+
+		if (cmdName == "rcommands") {
+			if (msg.author.id == process.env.OWNER_ID) {
+				bot.createMessage(msg.channel.id, `Reregistering commands.`);
+				registerCommands();
+			} else {
+				bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
+				logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
+			}
+		}
  
 		if (!command) return; // No command found
 
@@ -86,6 +119,16 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 		} catch (e) {
 			bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
 			logger.error(e)
+		}
+
+		return;
+	}
+
+	for (let i = 0; i < autoresponse.length; i++) {
+		const data = autoresponse[i];
+		if (data[0].test(msg.content)) {
+			bot.createMessage(msg.channel.id, data[1]);
+			return;
 		}
 	}
 });
