@@ -26,5 +26,8 @@
   "dependencies": {
     "dotenv": "^16.0.1",
     "eris": "^0.17.0"
+  },
+  "devDependencies": {
+    "winston": "^3.8.0"
   }
 }
