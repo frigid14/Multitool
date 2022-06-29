@@ -78,6 +78,16 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 				return element;
 			}
 		});
+
+		if (cmdName == "rcommands") {
+			if (msg.author.id == process.env.OWNER_ID) {
+				bot.createMessage(msg.channel.id, `Reregistering commands.`);
+				registerCommands();
+			} else {
+				bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
+				logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
+			}
+		}
  
 		if (!command) return; // No command found
 
