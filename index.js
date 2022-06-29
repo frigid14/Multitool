@@ -8,11 +8,11 @@ if (process.versions.node.split(".")[0] < 17) {
 const Eris = require("eris");
 const prefix = "law 2 ";
 const path = require("path");
-const { logger } = require("util");
+const logger = require("./utils/logging.js");
 const fs = require("fs");
 require('dotenv').config();
 
-logger.info(`
+console.log(`
 BBBBBB   #BBB########BBB#   BBBBBB                                 
 &&&&&&&&#55555P&&&GPPPPPPPPPPPPPPG&&&P55555#&&&&&&&&                        
    BPPPPPPPPPYYYYYYPPPGGGP55PPPP55PGGGPPPYYYYYYPPPPPPPPPB                       
@@ -46,7 +46,7 @@ function registerCommands() {
 		commands.push([command.meta, command.execute]);
 	}
 
-	logger.info(`Commands registed in ${(timer - Date.now()) / 1000}`);
+	logger.info(`Commands registed in ${(Date.now()-timer)/1000} seconds`);
 }
 
 // Replace TOKEN with your bot account's token
@@ -58,7 +58,7 @@ const bot = new Eris(process.env.DISCORD_TOKEN, {
 
 bot.on("ready", () => { // When the bot is ready
 	registerCommands();
-    logger.info("Bot is on.");
+    logger.info("Bot is on");
 });
 
 bot.on("error", (err) => {
