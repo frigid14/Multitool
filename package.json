@@ -1,0 +1,29 @@
+{
+  "name": "multitool",
+  "version": "0.0.1",
+  "description": "A multipurpose discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spesships/Multitool.git"
+  },
+  "keywords": [
+    "ss13",
+    "ss14",
+    "space",
+    "multitool",
+    "discord"
+  ],
+  "author": "Spesships",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Spesships/Multitool/issues"
+  },
+  "homepage": "https://github.com/Spesships/Multitool#readme",
+  "dependencies": {
+    "eris": "^0.17.0"
+  }
+}
