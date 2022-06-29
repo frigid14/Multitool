@@ -1,5 +1,8 @@
 const Eris = require("eris");
+const commands = [];
 const prefix = "law 2 ";
+const path = require("path");
+const fs = require("fs");
 require('dotenv').config();
 
 if (process.versions.node.split(".")[0] < 17) {
@@ -29,6 +32,18 @@ BGGB##&  &GGG###      BGGGGPB##BPGGGGB      ###GGG&  &##BGGB
 	  #GGB  &GGB      BGG&        &GGB      BGG&  BGG#                          
 `);
 
+function registerCommands() {
+	commands.splice(0,commands.length); // Refresh commands
+	const commandsPath = path.join(__dirname, 'commands'); // Get the path of the commands folder
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
+
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		commands.push([command.meta, command.execute]);
+	}
+}
+
 // Replace TOKEN with your bot account's token
 const bot = new Eris(process.env.DISCORD_TOKEN, {
     intents: [
@@ -37,6 +52,7 @@ const bot = new Eris(process.env.DISCORD_TOKEN, {
 });
 
 bot.on("ready", () => { // When the bot is ready
+	registerCommands();
     console.log("Bot is on.");
 });
 
@@ -44,11 +60,29 @@ bot.on("error", (err) => {
 	console.error(err); // or your preferred logger
 });
 
-bot.on("messageCreate", (msg) => { // When a message is created
+bot.on("messageCreate", async (msg) => { // When a message is created
     if (msg.content.startsWith(prefix)) {
 		msg.content = msg.content.substring(prefix.length);
-		if (msg.content === "ping") {
-			bot.createMessage(msg.channel.id, "Pong! :ping_pong:");
+		
+		const cmdName = msg.content.split(" ")[0];
+		const args = msg.content.split(" ");
+		args.shift();
+
+		console.log(commands)
+
+		const command = commands.find(function(element) {
+			if (element[0].name == cmdName) {
+				return element;
+			}
+		});
+ 
+		if (!command) return; // No command found
+
+		try {
+			await command[1](bot, msg, args)
+		} catch (e) {
+			bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
+			console.error(e)
 		}
 	}
 });
