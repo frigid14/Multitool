@@ -68,8 +68,6 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 		const args = msg.content.split(" ");
 		args.shift();
 
-		console.log(commands)
-
 		const command = commands.find(function(element) {
 			if (element[0].name == cmdName) {
 				return element;
