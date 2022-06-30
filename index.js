@@ -54,8 +54,6 @@ function registerCommands() {
 
 	fs.readdirSync(commandsPath).forEach(dir => {
 		fs.readdir(path.join(commandsPath + `/${dir}`), (err, files) => {
-			console.log(path.join(commandsPath + `/${dir}`))
-
 			commandFiles = fs.readdirSync(path.join(commandsPath + `/${dir}`)).filter(file => file.endsWith('.js'));
 
 			for (const file of commandFiles) {
@@ -105,5 +103,8 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 		}
 	}
 });
+
+bot.on("shardReady", async(id) => {logger.info(`Shard #${id} is now ready.`)})
+bot.on("shardDisconnect", async(id) => {logger.warn(`Shard #${id} has disconnected.`)})
 
 bot.connect(); // Get the bot to connect to Discord
