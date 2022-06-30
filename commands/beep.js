@@ -1,11 +1,12 @@
-module.exports = {
-	meta: {
-		name: "beep",
-		desc: "Beep."
-	},
-	async execute(bot, msg, args) {
+module.exports = [
+	"beep",
+	(msg, args) => { // Make an echo command
 		const messages = ["Beep.", "Boop.", "Beep-boop.", "Whirr."]
-		const message = messages[Math.floor(Math.random()*messages.length)];
-		bot.createMessage(msg.channel.id, message);
+		return messages[Math.floor(Math.random() * messages.length)];;
 	},
-};
+	{
+		description: "Beep. Boop. Beep-boop. Whirr.",
+		fullDescription: "Chooses a random beep.",
+		usage: ""
+	}
+]

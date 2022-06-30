@@ -1,13 +1,12 @@
-module.exports = {
-	meta: {
-		name: "avatar",
-		desc: "Get the profile picture of somebody!"
-	},
-	async execute(bot, msg, args) {
+module.exports = [
+	"avatar",
+	(msg, args) => {
 		const user = msg.mentions[0] || msg.author;
-		bot.createMessage(
-			msg.channel.id,
-			`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-		);
+		return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 	},
-};
+	{
+		description: "Returns the ping of the bot",
+		fullDescription: "Returns the API ms of the bot.",
+		usage: ""
+	}
+]

@@ -1,9 +1,11 @@
-module.exports = {
-	meta: {
-		name: "morb",
-		desc: "Morb."
+module.exports = [
+	"morb",
+	(msg, args) => {
+		return "No.";
 	},
-	async execute(bot, msg, args) {
-		bot.createMessage(msg.channel.id, `No.`);
-	},
-};
+	{
+		description: "LAW 2 MORB!!!!",
+		fullDescription: "THE BOT WILL MORB!!!",
+		usage: ""
+	}
+]
