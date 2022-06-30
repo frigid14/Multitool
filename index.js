@@ -6,7 +6,6 @@ if (process.versions.node.split(".")[0] < 17) {
 }
 
 const Eris = require("eris");
-const prefix = "law 2 ";
 const path = require("path");
 const logger = require("./utils/logging.js");
 const fs = require("fs");
@@ -35,6 +34,13 @@ BGGB##&  &GGG###      BGGGGPB##BPGGGGB      ###GGG&  &##BGGB
 const commands = [];
 const autoresponse = [];
 
+// Replace TOKEN with your bot account's token
+const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["all"], maxShards: "auto"},{
+	description: "Multitool: A multipurpose discord bot",
+	owner: process.env.OWNER_ID,
+	prefix: "law 2 "
+});
+
 function register() {
 	registerCommands();
 	registerResponses();
@@ -44,18 +50,26 @@ function registerCommands() {
 	const timer = Date.now();
 	commands.splice(0,commands.length); // Refresh commands
 	const commandsPath = path.join(__dirname, 'commands'); // Get the path of the commands folder
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
+	// const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
 
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		commands.push([command.meta, command.execute]);
-	}
+	fs.readdirSync(commandsPath).forEach(dir => {
+		fs.readdir(path.join(commandsPath + `/${dir}`), (err, files) => {
+			console.log(path.join(commandsPath + `/${dir}`))
 
-	logger.info(`Commands registed in ${(Date.now()-timer)/1000} seconds`);
+			commandFiles = fs.readdirSync(path.join(commandsPath + `/${dir}`)).filter(file => file.endsWith('.js'));
+
+			for (const file of commandFiles) {
+				const filePath = path.join(path.join(commandsPath + `/${dir}`), file);
+				const command = require(filePath);
+				bot.registerCommand(command[0], command[1], command[2])
+			}
+		});
+	});
+
+	logger.info(`Commands registed in ${(Date.now()-timer)} ms`);
 }
+
 function registerResponses() {
-	// ew copypasta code
 	const timer = Date.now();
 	autoresponse.splice(0,commands.length); // Refresh responses
 	const arPath = path.join(__dirname, 'autoresponder'); // Get the path of the commands folder
@@ -67,19 +81,13 @@ function registerResponses() {
 		autoresponse.push([ar.regex, ar.response]);
 	}
 
-	logger.info(`Responses registed in ${(Date.now()-timer)/1000} seconds`);
+	logger.info(`Responses registed in ${(Date.now()-timer)}ms`);
 }
-
-// Replace TOKEN with your bot account's token
-const bot = new Eris(process.env.DISCORD_TOKEN, {
-    intents: [
-        "guildMessages"
-    ]
-});
 
 bot.on("ready", () => { // When the bot is ready
 	register();
-    logger.info("Bot is on");
+	bot.editStatus("online", {name: "everyone's every move", type: 3, link: "https://discord.gg/n8se25bGCx"});
+	logger.info("Bot is on");
 });
 
 bot.on("error", (err) => {
@@ -88,41 +96,6 @@ bot.on("error", (err) => {
 
 bot.on("messageCreate", async (msg) => { // When a message is created
 	if (msg.author.id === bot.user.id) return; // don't want an infinite loop
-
-    if (msg.content.startsWith(prefix)) {
-		msg.content = msg.content.substring(prefix.length);
-		
-		const cmdName = msg.content.split(" ")[0];
-		const args = msg.content.split(" ");
-		args.shift();
-
-		const command = commands.find(function(element) {
-			if (element[0].name == cmdName) {
-				return element;
-			}
-		});
-
-		if (cmdName == "rcommands") {
-			if (msg.author.id == process.env.OWNER_ID) {
-				bot.createMessage(msg.channel.id, `Reregistering commands.`);
-				registerCommands();
-			} else {
-				bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
-				logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
-			}
-		}
- 
-		if (!command) return; // No command found
-
-		try {
-			await command[1](bot, msg, args)
-		} catch (e) {
-			bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
-			logger.error(e)
-		}
-
-		return;
-	}
 
 	for (let i = 0; i < autoresponse.length; i++) {
 		const data = autoresponse[i];
