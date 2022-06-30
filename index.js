@@ -55,7 +55,6 @@ function registerCommands() {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
-		console.log(command)
 		bot.registerCommand(command[0], command[1], command[2])
 	}
 
@@ -79,7 +78,8 @@ function registerResponses() {
 
 bot.on("ready", () => { // When the bot is ready
 	register();
-    logger.info("Bot is on");
+	bot.editStatus("online", {name: "everyone's every move", type: 3, link: "https://discord.gg/n8se25bGCx"});
+	logger.info("Bot is on");
 });
 
 bot.on("error", (err) => {
@@ -88,35 +88,6 @@ bot.on("error", (err) => {
 
 bot.on("messageCreate", async (msg) => { // When a message is created
 	if (msg.author.id === bot.user.id) return; // don't want an infinite loop
-
-    // if (msg.content.startsWith(prefix)) {
-	// 	msg.content = msg.content.substring(prefix.length);
-		
-	// 	const cmdName = msg.content.split(" ")[0];
-	// 	const args = msg.content.split(" ");
-	// 	args.shift();
-
-	// 	if (cmdName == "rcommands") {
-	// 		if (msg.author.id == process.env.OWNER_ID) {
-	// 			bot.createMessage(msg.channel.id, `Reregistering commands.`);
-	// 			registerCommands();
-	// 		} else {
-	// 			bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
-	// 			logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
-	// 		}
-	// 	}
- 
-	// 	if (!command) return; // No command found
-
-	// 	try {
-	// 		await command[1](bot, msg, args)
-	// 	} catch (e) {
-	// 		bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
-	// 		logger.error(e)
-	// 	}
-
-	// 	return;
-	// }
 
 	for (let i = 0; i < autoresponse.length; i++) {
 		const data = autoresponse[i];
