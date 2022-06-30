@@ -35,7 +35,7 @@ const commands = [];
 const autoresponse = [];
 
 // Replace TOKEN with your bot account's token
-const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["guildMessages"]},{
+const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["all"], maxShards: "auto"},{
 	description: "Multitool: A multipurpose discord bot",
 	owner: process.env.OWNER_ID,
 	prefix: "law 2 "
