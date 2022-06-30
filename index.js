@@ -50,15 +50,23 @@ function registerCommands() {
 	const timer = Date.now();
 	commands.splice(0,commands.length); // Refresh commands
 	const commandsPath = path.join(__dirname, 'commands'); // Get the path of the commands folder
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
+	// const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Get every file that ends with JS
 
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		bot.registerCommand(command[0], command[1], command[2])
-	}
+	fs.readdirSync(commandsPath).forEach(dir => {
+		fs.readdir(path.join(commandsPath + `/${dir}`), (err, files) => {
+			console.log(path.join(commandsPath + `/${dir}`))
 
-	logger.info(`Commands registed in ${(Date.now()-timer)/1000} seconds`);
+			commandFiles = fs.readdirSync(path.join(commandsPath + `/${dir}`)).filter(file => file.endsWith('.js'));
+
+			for (const file of commandFiles) {
+				const filePath = path.join(path.join(commandsPath + `/${dir}`), file);
+				const command = require(filePath);
+				bot.registerCommand(command[0], command[1], command[2])
+			}
+		});
+	});
+
+	logger.info(`Commands registed in ${(Date.now()-timer)} ms`);
 }
 
 function registerResponses() {
@@ -73,7 +81,7 @@ function registerResponses() {
 		autoresponse.push([ar.regex, ar.response]);
 	}
 
-	logger.info(`Responses registed in ${(Date.now()-timer)/1000} seconds`);
+	logger.info(`Responses registed in ${(Date.now()-timer)}ms`);
 }
 
 bot.on("ready", () => { // When the bot is ready
