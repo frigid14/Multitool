@@ -6,7 +6,6 @@ if (process.versions.node.split(".")[0] < 17) {
 }
 
 const Eris = require("eris");
-const prefix = "law 2 ";
 const path = require("path");
 const logger = require("./utils/logging.js");
 const fs = require("fs");
@@ -35,6 +34,13 @@ BGGB##&  &GGG###      BGGGGPB##BPGGGGB      ###GGG&  &##BGGB
 const commands = [];
 const autoresponse = [];
 
+// Replace TOKEN with your bot account's token
+const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["guildMessages"]},{
+	description: "Multitool: A multipurpose discord bot",
+	owner: process.env.OWNER_ID,
+	prefix: "law 2 "
+});
+
 function register() {
 	registerCommands();
 	registerResponses();
@@ -49,13 +55,14 @@ function registerCommands() {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
-		commands.push([command.meta, command.execute]);
+		console.log(command)
+		bot.registerCommand(command[0], command[1], command[2])
 	}
 
 	logger.info(`Commands registed in ${(Date.now()-timer)/1000} seconds`);
 }
+
 function registerResponses() {
-	// ew copypasta code
 	const timer = Date.now();
 	autoresponse.splice(0,commands.length); // Refresh responses
 	const arPath = path.join(__dirname, 'autoresponder'); // Get the path of the commands folder
@@ -70,13 +77,6 @@ function registerResponses() {
 	logger.info(`Responses registed in ${(Date.now()-timer)/1000} seconds`);
 }
 
-// Replace TOKEN with your bot account's token
-const bot = new Eris(process.env.DISCORD_TOKEN, {
-    intents: [
-        "guildMessages"
-    ]
-});
-
 bot.on("ready", () => { // When the bot is ready
 	register();
     logger.info("Bot is on");
@@ -89,40 +89,34 @@ bot.on("error", (err) => {
 bot.on("messageCreate", async (msg) => { // When a message is created
 	if (msg.author.id === bot.user.id) return; // don't want an infinite loop
 
-    if (msg.content.startsWith(prefix)) {
-		msg.content = msg.content.substring(prefix.length);
+    // if (msg.content.startsWith(prefix)) {
+	// 	msg.content = msg.content.substring(prefix.length);
 		
-		const cmdName = msg.content.split(" ")[0];
-		const args = msg.content.split(" ");
-		args.shift();
+	// 	const cmdName = msg.content.split(" ")[0];
+	// 	const args = msg.content.split(" ");
+	// 	args.shift();
 
-		const command = commands.find(function(element) {
-			if (element[0].name == cmdName) {
-				return element;
-			}
-		});
-
-		if (cmdName == "rcommands") {
-			if (msg.author.id == process.env.OWNER_ID) {
-				bot.createMessage(msg.channel.id, `Reregistering commands.`);
-				registerCommands();
-			} else {
-				bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
-				logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
-			}
-		}
+	// 	if (cmdName == "rcommands") {
+	// 		if (msg.author.id == process.env.OWNER_ID) {
+	// 			bot.createMessage(msg.channel.id, `Reregistering commands.`);
+	// 			registerCommands();
+	// 		} else {
+	// 			bot.createMessage(msg.channel.id, "Unauthorized access. This incident will be reported to Central Command.");
+	// 			logger.error(`User ${msg.author.id} attempted to use "rcommands" with no access.`)
+	// 		}
+	// 	}
  
-		if (!command) return; // No command found
+	// 	if (!command) return; // No command found
 
-		try {
-			await command[1](bot, msg, args)
-		} catch (e) {
-			bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
-			logger.error(e)
-		}
+	// 	try {
+	// 		await command[1](bot, msg, args)
+	// 	} catch (e) {
+	// 		bot.createMessage(msg.channel.id, "Malfunction! This incident will be reported to Central Command.");
+	// 		logger.error(e)
+	// 	}
 
-		return;
-	}
+	// 	return;
+	// }
 
 	for (let i = 0; i < autoresponse.length; i++) {
 		const data = autoresponse[i];
