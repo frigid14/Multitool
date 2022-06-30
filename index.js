@@ -105,6 +105,6 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 });
 
 bot.on("shardReady", async(id) => {logger.info(`Shard #${id} is now ready.`)})
-bot.on("shardDisconnect", async(id) => {logger.info(`Shard #${id} has disconnected.`)})
+bot.on("shardDisconnect", async(id) => {logger.warn(`Shard #${id} has disconnected.`)})
 
 bot.connect(); // Get the bot to connect to Discord
