@@ -59,6 +59,7 @@ function registerCommands() {
 			for (const file of commandFiles) {
 				const filePath = path.join(path.join(commandsPath + `/${dir}`), file);
 				const command = require(filePath);
+				bot.unregisterCommand(command[0]);
 				bot.registerCommand(command[0], command[1], command[2])
 			}
 		});
