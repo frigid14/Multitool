@@ -1,7 +1,7 @@
 module.exports = [
 	"ping",
-	(msg, args) => {
-		return `Pong.\nAPI ms: ${msg.timestamp - Date.now()}`;
+	(msg) => {
+		return `Pong.`;
 	},
 	{
 		description: "Returns the ping of the bot",

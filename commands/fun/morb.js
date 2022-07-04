@@ -1,6 +1,6 @@
 module.exports = [
 	"morb",
-	(msg, args) => {
+	() => {
 		return "No.";
 	},
 	{
