@@ -19,8 +19,11 @@ module.exports = [
 		.then(function (json) {
 			output = `**Name**: ${json.name}\n**Players**: ${json.players}`;
 		}).catch(function(e) {
-			logging.error(e);
 			output = "An unknown error occurred.";
+			if (e.name == 'FetchError') {
+				output = "The ping did not reach the server. Possible cause: Malformed configuration or the desired server is offline.\n\nThis incident has been reported to Central Command."
+			}
+			logging.error(e);
 		});
 
 		return output;
