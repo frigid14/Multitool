@@ -26,6 +26,7 @@
   "dependencies": {
     "dotenv": "^16.0.1",
     "eris": "^0.17.0",
+    "node-fetch": "^3.2.6",
     "toml": "^3.0.0"
   },
   "devDependencies": {
