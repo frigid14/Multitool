@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/Spesships/Multitool#readme",
   "dependencies": {
-    "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "eris": "^0.17.0",
     "toml": "^3.0.0"
