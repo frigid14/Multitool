@@ -1,4 +1,4 @@
-const uConfig = require("./../../utils/config.js");
+const uConfig = require("../../utils/config.js");
 
 module.exports = [
 	"link",
