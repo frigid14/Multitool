@@ -29,8 +29,8 @@ module.exports = [
 		return output;
 	},
 	{
-		description: "Make the bot say something",
-		fullDescription: "The bot will echo whatever is after the command label.",
-		usage: "<link_name>"
+		description: "Get the status of a server.",
+		fullDescription: "The bot will get the status of a server set in the configuration.",
+		usage: "<server_name>"
 	}
 ]
