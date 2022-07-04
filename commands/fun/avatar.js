@@ -1,6 +1,6 @@
 module.exports = [
 	"avatar",
-	(msg, args) => {
+	(msg) => {
 		const user = msg.mentions[0] || msg.author;
 		return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 	},

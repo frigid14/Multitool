@@ -42,7 +42,7 @@ const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["all"],
 	prefix: config.getConfig().bot.prefix
 });
 
-function register() {
+function init() {
 	registerCommands();
 	registerResponses();
 }
@@ -85,7 +85,7 @@ function registerResponses() {
 }
 
 bot.on("ready", () => { // When the bot is ready
-	register();
+	init();
 	bot.editStatus("online", {name: "everyone's every move", type: 3, link: "https://discord.gg/n8se25bGCx"});
 	logger.info("Bot is on");
 });
@@ -105,6 +105,30 @@ bot.on("messageCreate", async (msg) => { // When a message is created
 		}
 	}
 });
+
+bot.on("messageReactionAdd", async (message, emoji, reactor) => {
+	let rr = config.getModule("rr");
+	for (let i = 0; i < rr.length; i++) {
+		const data = rr[i];
+		if (data.msg == message.id) {
+			if (data.emoji == emoji.id) {
+				reactor.addRole(data.role, "Reacted to reaction role");
+			}
+		}
+	}
+})
+
+bot.on("messageReactionRemove", async (message, emoji, userid) => {
+	let rr = config.getModule("rr");
+	for (let i = 0; i < rr.length; i++) {
+		const data = rr[i];
+		if (data.msg == message.id) {
+			if (data.emoji == emoji.id) {
+				bot.guilds.get(message.guildID).removeMemberRole(userid, data.role, "Unreacted from reaction role");
+			}
+		}
+	}
+})
 
 bot.on("shardReady", async(id) => {logger.info(`Shard #${id} is now ready.`)})
 bot.on("shardDisconnect", async(id) => {logger.warn(`Shard #${id} has disconnected.`)})
