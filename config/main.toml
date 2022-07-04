@@ -1,0 +1,13 @@
+[bot]
+prefix = "law 2 "
+
+[module.links]
+spesships = "https://github.com/Spesships/"
+jailbreak = "https://github.com/Spesships/Jailbreak-14"
+multitool = "https://github.com/Spesships/Multitool"
+
+[module.ss14.2g2c]
+ip_address="foo.bar"
+port=1212
+api_port=1212
+api_token="foobar"

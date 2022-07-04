@@ -8,6 +8,7 @@ if (process.versions.node.split(".")[0] < 17) {
 const Eris = require("eris");
 const path = require("path");
 const logger = require("./utils/logging.js");
+const config = require("./utils/config.js");
 const fs = require("fs");
 require('dotenv').config();
 
@@ -38,7 +39,7 @@ const autoresponse = [];
 const bot = new Eris.CommandClient(process.env.DISCORD_TOKEN, {intents: ["all"], maxShards: "auto"},{
 	description: "Multitool: A multipurpose discord bot",
 	owner: process.env.OWNER_ID,
-	prefix: "law 2 "
+	prefix: config.getConfig().bot.prefix
 });
 
 function register() {
