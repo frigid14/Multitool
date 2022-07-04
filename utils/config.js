@@ -10,11 +10,11 @@ function readConfig() {
 	const env = process.env.NODE_ENV || 'development';
 
 	if (env == 'development') {
-		return toml.parse(readFile("./../config/test.toml"));
+		return toml.parse(readFile(path.join(__dirname, "../config/test.toml")));
 	}
-	return toml.parse(readFile("./../config/test.toml"));
+	return toml.parse(readFile(path.join(__dirname, "../config/main.toml")));
 }
 
 module.exports = {
-	readConfig: readConfig
+	getConfig: readConfig
 }
