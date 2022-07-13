@@ -1,5 +1,5 @@
 # Multitool
-A multipurpose discord bot designed for the Spesships discord server
+A multipurpose discord bot designed for SS14 discord server's
 
 ## License
 MIT
